@@ -19,4 +19,4 @@ export function truncate(str: string, n: number): string {
   return str.length > n ? str.slice(0, n) + '...' : str;
 }
 
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+export const API_URL = import.meta.env.VITE_API_URL || 'eduverse-z3h9.vercel.app';
