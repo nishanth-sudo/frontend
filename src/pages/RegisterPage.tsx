@@ -84,7 +84,7 @@ const RegisterPage: React.FC = () => {
   const handleGoogleLogin = async () => {
     try {
       await loginWithGoogle();
-      navigate('/');
+      // Navigation will happen automatically after redirect
     } catch (err) {
       // Error is handled by the auth context
     }
@@ -93,7 +93,7 @@ const RegisterPage: React.FC = () => {
   const handleGithubLogin = async () => {
     try {
       await loginWithGithub();
-      navigate('/');
+      // Navigation will happen automatically after redirect
     } catch (err) {
       // Error is handled by the auth context
     }

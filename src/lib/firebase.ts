@@ -23,6 +23,15 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const githubProvider = new GithubAuthProvider();
 
+// Configure providers for better user experience
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+githubProvider.setCustomParameters({
+  allow_signup: 'true'
+});
+
 // Database
 export const database = getDatabase(app);
 

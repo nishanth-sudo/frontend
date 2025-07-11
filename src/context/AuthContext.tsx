@@ -4,7 +4,8 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   UserCredential,
   User as FirebaseUser
 } from 'firebase/auth';
@@ -18,8 +19,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<UserCredential>;
   register: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
-  loginWithGoogle: () => Promise<UserCredential>;
-  loginWithGithub: () => Promise<UserCredential>;
+  loginWithGoogle: () => Promise<void>;
+  loginWithGithub: () => Promise<void>;
   getToken: () => Promise<string | null>;
   clearError: () => void;
 }
@@ -53,6 +54,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setLoading(false);
     });
+
+    // Handle redirect result for social logins
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          // User successfully signed in via redirect
+          setError(null);
+        }
+      } catch (err: any) {
+        console.error('Redirect result error:', err);
+        setError(err.message || 'Authentication failed');
+      }
+    };
+
+    handleRedirectResult();
 
     return unsubscribe;
   }, []);
@@ -88,28 +105,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setLoading(true);
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      await signInWithRedirect(auth, googleProvider);
       setError(null);
-      return result;
     } catch (err: any) {
       setError(err.message || 'Failed to login with Google');
-      throw err;
-    } finally {
       setLoading(false);
+    } finally {
+      // Don't set loading to false here as the redirect will reload the page
     }
   };
 
   const loginWithGithub = async () => {
     setLoading(true);
     try {
-      const result = await signInWithPopup(auth, githubProvider);
+      await signInWithRedirect(auth, githubProvider);
       setError(null);
-      return result;
     } catch (err: any) {
       setError(err.message || 'Failed to login with GitHub');
-      throw err;
-    } finally {
       setLoading(false);
+    } finally {
+      // Don't set loading to false here as the redirect will reload the page
     }
   };
 
